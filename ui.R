@@ -64,14 +64,12 @@ body <-  dashboardBody(tabItems(
                 )),
         tabItem(tabName = "breachByDevice",
                 fluidRow(
-#                         box(title = "Breach Count",plotOutput("breachPlotByYear")),
-#                         box(title = "Breach Impact",plotOutput("breachImpactPlotByYear"))
-                ),
+                        box(title = "Number of Breaches by Source of Data (Device)",width=12,plotOutput("breachBySourceOfDataCount")) 
+                ) ,
                 fluidRow(
-#                         box(title = "Breach Types - Count",plotOutput("breachTypePlotByYear")),
-#                         box(title = "Breach Types - Impact",plotOutput("breachTypeImpactPlotByYear"))
-                        
-                )),
+                      box(title = "Individuals Impacted through Breaches by Source of Data (Device)",width=12,plotOutput("breachBySourceOfDataImpact")) 
+                )        
+                ),
         tabItem(tabName = "breachByGeo",
                 fluidRow(box(title="Breach By Geography", rCharts::chartOutput('breachesByGeo', 'datamaps'),width = 12)),
                 fluidRow(box(title = "Corelation between Population and Breach Count", plotOutput("breachesPopCoorelationPlot")),

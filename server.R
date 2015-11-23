@@ -220,6 +220,58 @@ function(input, output) {
                 fit <- populationBreachImpactFit()
                 plot(fit)
         })
+        
+        output$breachBySourceOfDataImpact <- renderPlot({
+                breachesInRange <- breach.filtered()
+                if (nrow(breachesInRange) == 0) return()
+                
+                breachesRange <-
+                        breachesInRange %>% filter(!is.na(Covered.Entity.Type) &
+                                                           !is.na(Individuals.Affected))  %>%
+                        group_by(Breach.Year,location.of.breached.info.1) %>% summarise(impacted =
+                                                                                        sum(Individuals.Affected)) %>% ungroup()
+                if (nrow(breachesRange) > 0) {
+                        ggplot(
+                                breachesRange, aes(
+                                        x = as.factor(Breach.Year),y = impacted ,fill = location.of.breached.info.1
+                                )
+                        ) +
+                                geom_bar(stat = "identity" ,color = "black") +
+                                scale_y_continuous(labels=comma)+
+                                xlab("Year - Breach Submitted") +
+                                ylab("Number of Individuals Impacted") +
+                                theme_bw() +
+                                theme(axis.text.x = element_text(angle = 45,vjust = .5))
+                } else {
+                        "Failed"
+                }
+                
+        })
+        output$breachBySourceOfDataCount <- renderPlot({
+                breachesInRange <- breach.filtered()
+                if (nrow(breachesInRange) == 0) return()
+                
+                breachesRange <-
+                        breachesInRange %>% filter(!is.na(Covered.Entity.Type) &
+                                                           !is.na(Individuals.Affected))  %>%
+                        count(Breach.Year,location.of.breached.info.1) 
+                if (nrow(breachesRange) > 0) {
+                        ggplot(
+                                breachesRange, aes(
+                                        x = as.factor(Breach.Year),y = n ,fill = location.of.breached.info.1
+                                )
+                        ) +
+                                geom_bar(stat = "identity" ,color = "black") +
+                                scale_y_continuous(labels=comma)+
+                                xlab("Year - Breach Submitted") +
+                                ylab("Number of Breaches") +
+                                theme_bw() +
+                                theme(axis.text.x = element_text(angle = 45,vjust = .5))
+                } else {
+                        "Failed"
+                }
+                
+        })
         output$breachData <- DT::renderDataTable({
                 bdata <- breach.filtered()[,1:10]
                 if(nrow(bdata) == 0)return(datatable(bdata))
